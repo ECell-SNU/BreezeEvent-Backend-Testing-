@@ -19,4 +19,15 @@ router.post("/store", async (req, res) => {
   res.status(201).json(insertedUser);
 });
 
+router.get("/get", async (req, res) => {
+  let fetched = await db.fetch();
+  let allItems = fetched.items;
+
+  while (fetched.last) {
+    fetched = await db.fetch({}, { last: fetched.last });
+    allItems = allItems.concat(fetched.items);
+  }
+  return res.status(200).json({ allItems });
+});
+
 module.exports = router;
